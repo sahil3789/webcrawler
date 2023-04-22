@@ -28,16 +28,17 @@ public class WebCrawlerApplication {
         return prefix + suffix;
     }
 
-    public static String baseUrl(String startUrl) throws MalformedURLException {
+    public static String generateBaseUrl(String startUrl) throws MalformedURLException {
 
         URL url = new URL(startUrl);
 
         String path = url.getFile().substring(0, url.getFile().lastIndexOf('/'));
         baseUrl = url.getProtocol() + "://" + url.getHost();
+
         return startUrl;
     }
 
-    public static void statusCode(String url) throws IOException {
+    public static void getStatusCode(String url) throws IOException {
 
             if(!statusCode.containsKey(url)) {
 
@@ -51,22 +52,33 @@ public class WebCrawlerApplication {
                 Document page = Jsoup.parseBodyFragment(response.get("body"));
                 List<Element> links = page.getElementsByTag("a");
 
-                    for (Element link : links) {
-                        if(link.attr("href").isEmpty())
-                            break;
-                        else if(link.attr("href").equals("/"))
-                            continue;
-                        statusCode(formatUrl(baseUrl, link.attr("href")));
-                    }
+                links.stream()
+                        .parallel()
+                        .filter(link -> !link.attr("href").isEmpty())
+                        .filter(link -> !link.attr("href").equals("/"))
+                        .forEach(link -> {
+                            try {
+                                getStatusCode(formatUrl(baseUrl, link.attr("href")));
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+
             }
     }
 
     public static void main(String[] args) throws IOException {
 
         Scanner sc = new Scanner(System.in);
-        System.out.print("Enter a url of the form : https://domain.xyz/");
+        System.out.print("Enter a url of the form : https://domain.xyz");
         String startUrl = sc.nextLine();
-        statusCode(baseUrl(startUrl));
+
+        try {
+            getStatusCode(generateBaseUrl(startUrl + "/"));
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
 
     }
 }
