@@ -9,7 +9,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 public class Producer {
 
-    private final static String TOPIC = "url-list4";
+    private final static String TOPIC = "url-list";
     private final static String BOOTSTRAP_SERVERS =
             "localhost:9092";
 

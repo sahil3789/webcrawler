@@ -83,7 +83,7 @@ UrlStatusService {
 
         StreamsBuilder builder = new StreamsBuilder();
 
-        KStream<String, String> inputStream = builder.stream("url-list4");
+        KStream<String, String> inputStream = builder.stream("url-list");
 
         KStream<String, String> outputStream = inputStream.flatMapValues(value -> {
             try {
@@ -93,7 +93,7 @@ UrlStatusService {
             }
         });
 
-        outputStream.to("url-list4");
+        outputStream.to("url-list");
 
         KafkaStreams streams = new KafkaStreams(builder.build(), props);
 
