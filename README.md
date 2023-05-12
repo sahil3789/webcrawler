@@ -1,4 +1,4 @@
-# Web Crawler Using Java #
+# Web Crawler #
 
 A basic webcrawler using Java that gets status codes for all the urls/links on each url starting with the user input.
 
